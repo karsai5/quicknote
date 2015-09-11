@@ -1,10 +1,12 @@
-import curses
-import subprocess
-import re
-import ntpath
 from os.path import expanduser
-import sys, tempfile, os
 from subprocess import call
+import curses
+import ntpath
+import os
+import re
+import subprocess
+import sys
+import time
 
 searchTerm = ""
 selectedItem = -1
