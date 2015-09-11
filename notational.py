@@ -56,7 +56,8 @@ def findFiles(term):
     files = []
     for document in documentSet:
         # print(document[1])
-        if any(term.lower() in s for s in document[1]) or term.lower() in document[0].lower():
+        basename = os.path.splitext(ntpath.basename(document[0]))[0].lower()
+        if any(term.lower() in s for s in document[1]) or term.lower() in basename:
             files.append(document[0])
     return files
 
