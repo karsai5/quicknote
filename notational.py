@@ -25,6 +25,10 @@ def setupScreen():
     curses.curs_set(0)
     screen.keypad(1)
 
+def sorted_ls(path):
+    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+    return reversed(list(sorted(os.listdir(path), key=mtime)))
+
 """ Update keyword search
 Read all the files in the notational folder and update the interal document list
 to reflect their contents. Note: for lots of files this could cause a hang.
@@ -32,7 +36,7 @@ to reflect their contents. Note: for lots of files this could cause a hang.
 def updateDocumentSet():
     global documentSet
     documentSet =  []
-    for note in os.listdir(notationalDir):
+    for note in sorted_ls(notationalDir):
         if note != 'Notes & Settings' and note[0] != '.':
             filePath = notationalDir + note
             with open(notationalDir + note, 'r') as f:
@@ -80,11 +84,15 @@ def drawPage():
 
     for x in range(maxh):
         try:
-            basename = os.path.splitext(ntpath.basename(results[x]))[0]
+            # only show file title
+            modTime = time.ctime(os.path.getmtime(results[x]))
+            basename = os.path.splitext(ntpath.basename(results[x]))[0] 
+            space = w - len(modTime) - len(basename) -1
+            lineItem = basename + ' ' * space + modTime
             if x == selectedItem:
-                screen.addstr(basename + '\n', curses.A_STANDOUT)
+                screen.addstr(lineItem + '\n', curses.A_STANDOUT)
             else:
-                screen.addstr(basename + '\n')
+                screen.addstr(lineItem + '\n')
         except curses.error:
             pass
 
