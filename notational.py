@@ -106,7 +106,7 @@ def editPage():
     global selectedFile
     curses.endwin() # close curses app
     if selectedItem < 0: # if new file
-        selectedFile = notationalDir + searchTerm + '.txt'
+        selectedFile = notationalDir + '/' + searchTerm + '.txt'
         if not os.path.isfile(selectedFile):
             open (selectedFile, 'a').close()
     else: #otherwise use selected file
