@@ -12,8 +12,8 @@ searchTerm = ""
 selectedItem = -1
 documentSet = []
 results = []
-notationalDir = expanduser("~/Dropbox/Documents/Notational/")
 EDITOR = os.environ.get('EDITOR','vim') #that easy!
+notationalDir = os.getcwd()
 
 """ Setup cursors screen
 Set up screen with no echo settings etc.
@@ -38,8 +38,8 @@ def updateDocumentSet():
     documentSet =  []
     for note in sorted_ls(notationalDir):
         if note != 'Notes & Settings' and note[0] != '.':
-            filePath = notationalDir + note
-            with open(notationalDir + note, 'r') as f:
+            filePath = notationalDir + '/' + note
+            with open(filePath, 'r') as f:
                 words = []
                 for line in f:
                     line = re.sub(r'[^a-zA-Z0-9]',' ', line) # remove non-alphanumeric
@@ -120,6 +120,17 @@ def editPage():
     drawPage()
 
 if __name__ == "__main__":
+    # If argument given use that as notational directory, otherwise just use
+    # current directory
+    if len(sys.argv) > 1:
+        print(sys.argv[1])
+        if not os.path.isdir(expanduser(sys.argv[1])):
+            print("That doesn't seem to be a directory...")
+            print("python notational.py [notaional directory]")
+            sys.exit(1)
+        notationalDir = expanduser(sys.argv[1])
+
+
     # Initial page draw
     setupScreen()
     updateDocumentSet()
