@@ -1,5 +1,5 @@
 #Notational Velocity CLI
-This is a command line interface of the note taking application for OSX. Written in python it should work on most operating systems although I have only tested it in linux.
+This is a command line interface of the note taking application [Notational Velocity](http://notational.net/) for OSX. Written in python it should work on most operating systems although I have only tested it in linux.
 
 To start the application with python
 ```
