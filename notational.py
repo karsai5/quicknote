@@ -13,6 +13,9 @@ results = []
 notationalDir = expanduser("~/Dropbox/Documents/Notational/")
 EDITOR = os.environ.get('EDITOR','vim') #that easy!
 
+""" Setup cursors screen
+Set up screen with no echo settings etc.
+""" 
 def setupScreen():
     global screen
     screen = curses.initscr()
@@ -20,7 +23,10 @@ def setupScreen():
     curses.curs_set(0)
     screen.keypad(1)
 
-
+""" Update keyword search
+Read all the files in the notational folder and update the interal document list
+to reflect their contents. Note: for lots of files this could cause a hang.
+"""
 def updateDocumentSet():
     global documentSet
     documentSet =  []
@@ -36,6 +42,10 @@ def updateDocumentSet():
                         words.append(word)
                 documentSet.append((filePath, set(words)))
 
+""" Search for a term in files
+Using the internally generated document set, search for any files that contain
+the term, or have the term in the header. Returns the files as a list of paths.
+"""
 def findFiles(term):
     files = []
     for document in documentSet:
@@ -44,6 +54,11 @@ def findFiles(term):
             files.append(document[0])
     return files
 
+""" Main page drawing function
+Clears the screen and updates it with the current search term at the top
+as well as a list of notes that contain the searched term. It also highlights
+the currently selected file for editing.
+"""
 def drawPage():
     global selectedItem
     global results
@@ -64,6 +79,10 @@ def drawPage():
         except curses.error:
             pass
 
+""" Note editing function
+If a file is selected it will open it in your favourite editor, otherwise it'll
+create a new file with the searchterm as its name and open that.
+"""
 def editPage():
     global results
     global selectedFile
@@ -83,34 +102,35 @@ def editPage():
     updateDocumentSet()
     drawPage()
 
-# Initial page draw
-setupScreen()
-updateDocumentSet()
-drawPage()
+if __name__ == "__main__":
+    # Initial page draw
+    setupScreen()
+    updateDocumentSet()
+    drawPage()
 
-while True: 
-    event = screen.getch() 
-    if event == 27:
-        screen.nodelay(True)
-        n = screen.getch()
-        if n == -1:
-            print("hit escape")
-            break
-        screen.nodelay(False)
-    elif event == curses.KEY_BACKSPACE:
-        searchTerm = searchTerm[:-1]
-        drawPage()
-    elif event == curses.KEY_UP:
-        selectedItem = selectedItem - 1
-        drawPage()
-    elif event == curses.KEY_DOWN:
-        selectedItem = selectedItem + 1
-        drawPage()
-    elif event == 10:
-        editPage()
-        drawPage()
-    else:
-        searchTerm = searchTerm + str(chr(event))
-        drawPage()
+    while True: 
+        event = screen.getch() 
+        if event == 27:
+            screen.nodelay(True)
+            n = screen.getch()
+            if n == -1:
+                print("hit escape")
+                break
+            screen.nodelay(False)
+        elif event == curses.KEY_BACKSPACE:
+            searchTerm = searchTerm[:-1]
+            drawPage()
+        elif event == curses.KEY_UP:
+            selectedItem = selectedItem - 1
+            drawPage()
+        elif event == curses.KEY_DOWN:
+            selectedItem = selectedItem + 1
+            drawPage()
+        elif event == 10:
+            editPage()
+            drawPage()
+        else:
+            searchTerm = searchTerm + str(chr(event))
+            drawPage()
 
-curses.endwin()
+    curses.endwin()
