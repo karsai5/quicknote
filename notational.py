@@ -62,14 +62,21 @@ the currently selected file for editing.
 def drawPage():
     global selectedItem
     global results
+
+    h,w = screen.getmaxyx()
     screen.clear()
+
     screen.addstr("Search Term: %s\n" % searchTerm, curses.A_REVERSE)
     results = findFiles(searchTerm)
-    if selectedItem > len(results): 
-        selectedItem = len(results)-1
+
+    maxh = len(results) if len(results) < h else h-1
+    if selectedItem > maxh: 
+        selectedItem = maxh-1
+
     elif selectedItem < -1:
         selectedItem = -1
-    for x in range(len(results)):
+
+    for x in range(maxh):
         try:
             basename = os.path.splitext(ntpath.basename(results[x]))[0]
             if x == selectedItem:
