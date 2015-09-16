@@ -88,6 +88,7 @@ def drawPage():
     global results
 
     h,w = screen.getmaxyx()
+    h = h-2
     screen.clear()
 
     printHeader()
@@ -96,7 +97,7 @@ def drawPage():
     screen.addstr("Search Term: %s\n" % searchTerm, curses.A_REVERSE)
     results = findFiles(searchTerm)
 
-    maxh = len(results) if len(results) < h else h-1
+    maxh = len(results) if len(results) < h else h
     if selectedItem > maxh: 
         selectedItem = maxh-1
 
