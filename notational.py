@@ -11,6 +11,7 @@ import locale
 
 searchTerm = ""
 updateText = ""
+showPreview = True
 selectedItem = -1
 documentSet = []
 results = []
@@ -87,6 +88,15 @@ def safePrint(text, formatting = None):
     except curses.error:
         pass
 
+def printFile(filename, number = None):
+    with open(filename, 'r') as f:
+        counter = 0
+        for line in f:
+            counter += 1
+            safePrint(line)
+            if counter >= number:
+                break
+
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
 as well as a list of notes that contain the searched term. It also highlights
@@ -97,13 +107,17 @@ def drawPage():
     global results
 
     h,w = screen.getmaxyx()
-    h = h-2
     screen.clear()
 
     # Print current search term
     screen.addstr(fullWidthString("Search Term: %s" % searchTerm, updateText) + '\n', 
             curses.A_REVERSE)
     results = findFiles(searchTerm)
+
+    if showPreview and selectedItem >= 0:
+        h = int(h-(h/1.8))
+    else:
+        h = h-1
 
     maxh = len(results) if len(results) < h else h
     if selectedItem >= maxh: 
@@ -122,10 +136,10 @@ def drawPage():
         else:
             safePrint(lineItem + '\n')
 
-    try:
-        screen.addstr(w * '-')
-    except curses.error:
-        pass
+    if showPreview and selectedItem >= 0:
+        safePrint(w * '-')
+        printNumLines = h - len(results) -1
+        printFile(results[selectedItem], printNumLines)
 
 """ Note editing function
 If a file is selected it will open it in your favourite editor, otherwise it'll
@@ -174,6 +188,14 @@ if __name__ == "__main__":
             n = screen.getch()
             if n == -1:
                 break
+            elif n == 112: # alt + p: toggle preview
+                if showPreview:
+                    showPreview = False
+                    updateText = 'Hide preview'
+                else:
+                    updateText = 'Show preview'
+                    showPreview = True
+                drawPage()
             elif n == 113: # alt + q: quit
                 break
             elif n == 114: # alt + r: reload files
