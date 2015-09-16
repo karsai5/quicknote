@@ -72,12 +72,6 @@ def fullWidthString(texta, textb):
     space = w - len(texta) - len(textb) -1
     return texta + ' ' * space + textb
 
-def printHeader():
-    headerString = 'Notational'
-    if (updateText != ''):
-        headerString += ': %s' % updateText
-    screen.addstr('%s\n' % fullWidthString(headerString,''), curses.A_REVERSE)
-
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
 as well as a list of notes that contain the searched term. It also highlights
@@ -91,10 +85,9 @@ def drawPage():
     h = h-2
     screen.clear()
 
-    printHeader()
-
     # Print current search term
-    screen.addstr("Search Term: %s\n" % searchTerm, curses.A_REVERSE)
+    screen.addstr(fullWidthString("Search Term: %s" % searchTerm, updateText) + '\n', 
+            curses.A_REVERSE)
     results = findFiles(searchTerm)
 
     maxh = len(results) if len(results) < h else h
