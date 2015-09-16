@@ -10,6 +10,7 @@ import time
 import locale
 
 searchTerm = ""
+updateText = ""
 selectedItem = -1
 documentSet = []
 results = []
@@ -66,6 +67,17 @@ def findFiles(term):
             files.append(document[0])
     return files
 
+def fullWidthString(texta, textb):
+    h,w = screen.getmaxyx()
+    space = w - len(texta) - len(textb) -1
+    return texta + ' ' * space + textb
+
+def printHeader():
+    headerString = 'Notational'
+    if (updateText != ''):
+        headerString += ': %s' % updateText
+    screen.addstr('%s\n' % fullWidthString(headerString,''), curses.A_REVERSE)
+
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
 as well as a list of notes that contain the searched term. It also highlights
@@ -78,6 +90,9 @@ def drawPage():
     h,w = screen.getmaxyx()
     screen.clear()
 
+    printHeader()
+
+    # Print current search term
     screen.addstr("Search Term: %s\n" % searchTerm, curses.A_REVERSE)
     results = findFiles(searchTerm)
 
@@ -88,13 +103,12 @@ def drawPage():
     elif selectedItem < -1:
         selectedItem = -1
 
+    # print each item in results, highlight selected item
     for x in range(maxh):
         try:
             # only show file title
-            modTime = time.ctime(os.path.getmtime(results[x]))
-            basename = os.path.splitext(ntpath.basename(results[x]))[0] 
-            space = w - len(modTime) - len(basename) -1
-            lineItem = basename + ' ' * space + modTime
+            lineItem = fullWidthString(os.path.splitext(ntpath.basename(results[x]))[0],
+                time.ctime(os.path.getmtime(results[x])))
             if x == selectedItem:
                 screen.addstr(lineItem + '\n', curses.A_STANDOUT)
             else:
@@ -164,6 +178,7 @@ if __name__ == "__main__":
             editPage()
             drawPage()
         elif event < 257:
+            updateText = ''
             searchTerm = searchTerm + str(chr(event))
             drawPage()
 
