@@ -162,8 +162,14 @@ if __name__ == "__main__":
             screen.nodelay(True)
             n = screen.getch()
             if n == -1:
-                print("hit escape")
                 break
+            elif n == 113: # alt + q: quit
+                break
+            elif n == 114: # alt + r: reload files
+                searchTerm = ''
+                updateText = 'Documents updated!'
+                updateDocumentSet()
+                drawPage()
             screen.nodelay(False)
         elif event == curses.KEY_BACKSPACE:
             searchTerm = searchTerm[:-1]
