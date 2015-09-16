@@ -88,6 +88,9 @@ def safePrint(text, formatting = None):
     except curses.error:
         pass
 
+""" Print file preview
+Print the first @number of files from @filename, note that this
+doesn't take into account line wrapping """
 def printFile(filename, number = None):
     with open(filename, 'r') as f:
         counter = 0
