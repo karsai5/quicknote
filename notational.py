@@ -96,6 +96,10 @@ def printFile(filename, number = None):
             safePrint(line)
             if counter >= number:
                 break
+        # print blank lines
+        # while counter < number-1:
+        #     safePrint('~\n')
+        #     counter += 1
 
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
@@ -115,11 +119,11 @@ def drawPage():
     results = findFiles(searchTerm)
 
     if showPreview and selectedItem >= 0:
-        h = int(h-(h/1.8))
+        maxh = int(h-(h/1.8))
     else:
-        h = h-1
+        maxh = h-1
 
-    maxh = len(results) if len(results) < h else h
+    maxh = len(results) if len(results) < maxh else maxh
     if selectedItem >= maxh: 
         selectedItem = maxh-1
 
@@ -138,7 +142,7 @@ def drawPage():
 
     if showPreview and selectedItem >= 0:
         safePrint(w * '-')
-        printNumLines = h - len(results) -1
+        printNumLines = h - maxh -1
         printFile(results[selectedItem], printNumLines)
 
 """ Note editing function
