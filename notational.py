@@ -163,7 +163,7 @@ if __name__ == "__main__":
         elif event == 10:
             editPage()
             drawPage()
-        else:
+        elif event < 257:
             searchTerm = searchTerm + str(chr(event))
             drawPage()
 
