@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys
 import time
+import locale
 
 searchTerm = ""
 selectedItem = -1
@@ -14,6 +15,10 @@ documentSet = []
 results = []
 EDITOR = os.environ.get('EDITOR','vim') #that easy!
 notationalDir = os.getcwd()
+
+# Set up curses to interpret non-ASCII characters
+locale.setlocale(locale.LC_ALL, '')
+code = locale.getpreferredencoding()
 
 """ Setup cursors screen
 Set up screen with no echo settings etc.
