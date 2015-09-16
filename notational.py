@@ -98,7 +98,7 @@ def drawPage():
     results = findFiles(searchTerm)
 
     maxh = len(results) if len(results) < h else h
-    if selectedItem > maxh: 
+    if selectedItem >= maxh: 
         selectedItem = maxh-1
 
     elif selectedItem < -1:
@@ -172,13 +172,13 @@ if __name__ == "__main__":
                 updateDocumentSet()
                 drawPage()
             screen.nodelay(False)
-        elif event == curses.KEY_BACKSPACE:
+        elif event == curses.KEY_BACKSPACE: # backspace
             searchTerm = searchTerm[:-1]
             drawPage()
-        elif event == curses.KEY_UP:
+        elif event == curses.KEY_UP: # up
             selectedItem = selectedItem - 1
             drawPage()
-        elif event == curses.KEY_DOWN:
+        elif event == curses.KEY_DOWN: # down
             selectedItem = selectedItem + 1
             drawPage()
         elif event == 10:
