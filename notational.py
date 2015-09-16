@@ -171,6 +171,14 @@ def editPage():
     updateDocumentSet()
     drawPage()
 
+def deleteSelectedFile():
+    global updateText
+    if selectedItem >= 0:
+        os.remove(results[selectedItem])
+        updateText = 'deleted \'%s\'' % os.path.splitext(ntpath.basename(results[selectedItem]))[0]
+    else:
+        updateText = 'No note selected, can\'t delete'
+
 if __name__ == "__main__":
     # If argument given use that as notational directory, otherwise just use
     # current directory
@@ -208,6 +216,10 @@ if __name__ == "__main__":
             elif n == 114: # alt + r: reload files
                 searchTerm = ''
                 updateText = 'Documents updated!'
+                updateDocumentSet()
+                drawPage()
+            elif n == 100: # alt + d: delete file
+                deleteSelectedFile()
                 updateDocumentSet()
                 drawPage()
             screen.nodelay(False)
