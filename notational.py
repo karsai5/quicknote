@@ -67,10 +67,25 @@ def findFiles(term):
             files.append(document[0])
     return files
 
+""" Create full width string,
+Will add spaces between texta and textb in order to make it fill entire screen width
+then will return
+"""
 def fullWidthString(texta, textb):
     h,w = screen.getmaxyx()
     space = w - len(texta) - len(textb) -1
     return texta + ' ' * space + textb
+
+""" Safely print in curses passing errors
+"""
+def safePrint(text, formatting = None):
+    try:
+        if formatting == None:
+            screen.addstr(text)
+        else:
+            screen.addstr(text, formatting)
+    except curses.error:
+        pass
 
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
@@ -99,16 +114,18 @@ def drawPage():
 
     # print each item in results, highlight selected item
     for x in range(maxh):
-        try:
-            # only show file title
-            lineItem = fullWidthString(os.path.splitext(ntpath.basename(results[x]))[0],
-                time.ctime(os.path.getmtime(results[x])))
-            if x == selectedItem:
-                screen.addstr(lineItem + '\n', curses.A_STANDOUT)
-            else:
-                screen.addstr(lineItem + '\n')
-        except curses.error:
-            pass
+        # only show file title
+        lineItem = fullWidthString(os.path.splitext(ntpath.basename(results[x]))[0],
+            time.ctime(os.path.getmtime(results[x])))
+        if x == selectedItem:
+            safePrint(lineItem + '\n', curses.A_STANDOUT)
+        else:
+            safePrint(lineItem + '\n')
+
+    try:
+        screen.addstr(w * '-')
+    except curses.error:
+        pass
 
 """ Note editing function
 If a file is selected it will open it in your favourite editor, otherwise it'll
