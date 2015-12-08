@@ -230,7 +230,7 @@ if __name__ == "__main__":
                 updateDocumentSet()
                 drawPage()
             screen.nodelay(False)
-        elif event == curses.KEY_BACKSPACE: # backspace
+        elif event == curses.KEY_BACKSPACE or event == 127: # backspace
             searchTerm = searchTerm[:-1]
             drawPage()
         elif event == curses.KEY_UP: # up
