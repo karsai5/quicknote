@@ -8,6 +8,7 @@ import subprocess
 import sys
 import time
 import locale
+import math
 
 searchTerm = ""
 updateText = ""
@@ -93,16 +94,22 @@ Print the first @number of files from @filename, note that this
 doesn't take into account line wrapping """
 def printFile(filename, number = None):
     with open(filename, 'r') as f:
+        h,w = screen.getmaxyx()
         counter = 0
+        lastline = ''
         for line in f:
-            counter += 1
+            counter += math.ceil(len(line)/w)
             safePrint(line)
+            lastline = line
             if counter >= number:
                 break
+        # add newline if missing
+        if '\n' not in lastline:
+            safePrint('\n')
         # print blank lines
-        # while counter < number-1:
-        #     safePrint('~\n')
-        #     counter += 1
+        while counter < number-1:
+            safePrint('~\n')
+            counter += 1
 
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
