@@ -9,6 +9,7 @@ import sys
 import time
 import locale
 import math
+# test line
 
 searchTerm = ""
 updateText = ""
