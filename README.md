@@ -1,4 +1,5 @@
-#Notational Velocity CLI
+# Notational Velocity CLI
+
 This is a command line interface of the note taking application [Notational Velocity](http://notational.net/) for OSX. Written in python it should work on most operating systems although I have only tested it in linux.
 
 To start the application with python
@@ -12,4 +13,5 @@ Start typing straight away and it'll start filtering the files that contain your
 Use the arrow keys to highlight different files.
 Hitting enter will open up that note in your favourite editor.
 Hitting enter when no file is selected will create a new file with the search term as its name and open it in your editor
+
 ![new edited file](https://github.com/karsai5/notational_curses/raw/images/notational-example.gif)
