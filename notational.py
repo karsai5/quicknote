@@ -146,7 +146,7 @@ def drawPage():
         lineItem = fullWidthString(os.path.splitext(ntpath.basename(results[x]))[0],
             time.ctime(os.path.getmtime(results[x])))
         if x == selectedItem:
-            safePrint(lineItem + '\n', curses.A_STANDOUT)
+            safePrint(lineItem + '\n', curses.A_REVERSE)
         else:
             safePrint(lineItem + '\n')
 
