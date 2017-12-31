@@ -2,14 +2,14 @@
 from os.path import expanduser
 from subprocess import call
 import curses
+import locale
+import math
 import ntpath
 import os
 import re
 import subprocess
 import sys
 import time
-import locale
-import math
 
 searchTerm = ""
 updateText = ""
@@ -17,6 +17,7 @@ showPreview = True
 selectedItem = -1
 documentSet = []
 results = []
+storedException = None
 EDITOR = os.environ.get('EDITOR','vim') #that easy!
 notationalDir = os.getcwd()
 
@@ -46,7 +47,7 @@ def updateDocumentSet():
     global documentSet
     documentSet =  []
     for note in sorted_ls(notationalDir):
-        if note != 'Notes & Settings' and note[0] != '.':
+        if os.path.isfile(note):
             filePath = notationalDir + '/' + note
             with open(filePath, 'r') as f:
                 words = []
@@ -204,48 +205,55 @@ if __name__ == "__main__":
     updateDocumentSet()
     drawPage()
 
-    while True: 
-        event = screen.getch() 
-        if event == 27:
-            screen.nodelay(True)
-            n = screen.getch()
-            if n == -1:
+    while True:
+        try:
+            if storedException:
                 break
-            elif n == 112: # alt + p: toggle preview
-                if showPreview:
-                    showPreview = False
-                    updateText = 'Hide preview'
-                else:
-                    updateText = 'Show preview'
-                    showPreview = True
+            event = screen.getch()
+            if event == 27:
+                screen.nodelay(True)
+                n = screen.getch()
+                if n == -1:
+                    break
+                elif n == 112: # alt + p: toggle preview
+                    if showPreview:
+                        showPreview = False
+                        updateText = 'Hide preview'
+                    else:
+                        updateText = 'Show preview'
+                        showPreview = True
+                    drawPage()
+                elif n == 113: # alt + q: quit
+                    break
+                elif n == 114: # alt + r: reload files
+                    searchTerm = ''
+                    updateText = 'Documents updated!'
+                    updateDocumentSet()
+                    drawPage()
+                elif n == 100: # alt + d: delete file
+                    deleteSelectedFile()
+                    updateDocumentSet()
+                    drawPage()
+                screen.nodelay(False)
+            elif event == curses.KEY_BACKSPACE or event == 127: # backspace
+                searchTerm = searchTerm[:-1]
                 drawPage()
-            elif n == 113: # alt + q: quit
-                break
-            elif n == 114: # alt + r: reload files
-                searchTerm = ''
-                updateText = 'Documents updated!'
-                updateDocumentSet()
+            elif event == curses.KEY_UP: # up
+                selectedItem = selectedItem - 1
                 drawPage()
-            elif n == 100: # alt + d: delete file
-                deleteSelectedFile()
-                updateDocumentSet()
+            elif event == curses.KEY_DOWN: # down
+                selectedItem = selectedItem + 1
                 drawPage()
-            screen.nodelay(False)
-        elif event == curses.KEY_BACKSPACE or event == 127: # backspace
-            searchTerm = searchTerm[:-1]
-            drawPage()
-        elif event == curses.KEY_UP: # up
-            selectedItem = selectedItem - 1
-            drawPage()
-        elif event == curses.KEY_DOWN: # down
-            selectedItem = selectedItem + 1
-            drawPage()
-        elif event == 10:
-            editPage()
-            drawPage()
-        elif event < 257:
-            updateText = ''
-            searchTerm = searchTerm + str(chr(event))
-            drawPage()
-
+            elif event == 10:
+                editPage()
+                drawPage()
+            elif event < 257:
+                updateText = ''
+                searchTerm = searchTerm + str(chr(event))
+                drawPage()
+        except KeyboardInterrupt:
+            storedException = sys.exc_info()
     curses.endwin()
+    print 'Thanks for using QuickNote!'
+    print '-- Linus'
+    sys.exit();
