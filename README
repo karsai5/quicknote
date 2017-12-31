@@ -1,10 +1,17 @@
-# QuickNotes
+# QuickNote
 
 This is a command line note taking application based on [Notational Velocity](http://notational.net/) for OSX. Written in python it should work on most operating systems although I have only tested it in linux/osx.
 
+## Installation
+```
+pip install quicknote
+```
+
+## Usage
+
 To start the application with python
 ```
-$ python notational.py [notation directory]
+$ qn [notation directory]
 ```
 If you keep your notes in a particular directory add that as an argument, otherwise it'll just start in your current working directory. 
 
