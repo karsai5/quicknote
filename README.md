@@ -1,6 +1,6 @@
-# Notational Velocity CLI
+# QuickNotes
 
-This is a command line interface of the note taking application [Notational Velocity](http://notational.net/) for OSX. Written in python it should work on most operating systems although I have only tested it in linux.
+This is a command line note taking application based on [Notational Velocity](http://notational.net/) for OSX. Written in python it should work on most operating systems although I have only tested it in linux/osx.
 
 To start the application with python
 ```
