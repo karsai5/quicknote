@@ -1,0 +1,8 @@
+#! /bin/bash
+echo "==== Uploading contents of dist using twine."
+twine upload dist/*
+if [ $? -eq 0 ]; then
+  echo "==== Done!"
+else
+  echo "==== Something went wrong!"
+fi

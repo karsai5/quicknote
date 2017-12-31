@@ -1,0 +1,16 @@
+#! /bin/bash
+echo "==== Removing old dist"
+rm -rf dist
+echo "==== Creating unpackaged dist"
+python setup.py sdist
+if [ $? -eq 0 ]; then
+  echo "==== Creating wheel dist"
+  python setup.py bdist_wheel --universal
+  if [ $? -eq 0 ]; then
+    echo "==== Done!"
+  else
+    echo "==== Something went wrong!"
+  fi
+else
+  echo "==== Something went wrong!"
+fi
