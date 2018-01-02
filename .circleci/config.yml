@@ -71,24 +71,20 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
+      - run:
+          name: create build hash
+          command: |
+            echo "$CIRCLE_SHA1" > _build_hash
+
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run:
-          name: install dependencies
-          command: |
-            virtualenv pyenv
-            source pyenv/bin/activate
-            pip install -r requirements.txt
-
-      - save_cache:
-          paths:
-            - ./pyenv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+      - restore_cache:
+          keys:
+          - v1-dist-{{ checksum "_build_hash" }}
 
       - deploy:
           name: Deploy to server
@@ -99,6 +95,13 @@ jobs:
             exit
 workflows:
   version: 2
-  build_and_test:
+  build_and_deploy:
     jobs:
       - build
+      - hold
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - hold
