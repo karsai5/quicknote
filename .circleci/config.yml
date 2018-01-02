@@ -40,15 +40,15 @@ jobs:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
 
       - run:
-        name: create dist package
-        command: |
-          source pyenv/bin/activate
-          ./scripts/createpackage
+          name: create dist package
+          command: |
+            source pyenv/bin/activate
+            ./scripts/createpackage
 
       - save_cache:
-        paths:
-          - ./dist
-        key: v1-dist-{{ .Enviroment.CIRCLE_SHA1 }}
+          paths:
+            - ./dist
+          key: v1-dist-{{ .Enviroment.CIRCLE_SHA1 }}
 
   deploy:
     docker:
