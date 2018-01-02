@@ -44,12 +44,11 @@ jobs:
           command: |
             source pyenv/bin/activate
             ./scripts/createpackage
-            env
 
       - save_cache:
           paths:
             - ./dist
-          key: v1-dist-{{ $CIRCLE_SHA1 }}
+          key: v1-dist-{{ CIRCLE_SHA1 }}
 
   deploy:
     docker:
