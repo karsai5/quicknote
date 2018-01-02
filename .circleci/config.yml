@@ -98,7 +98,7 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - hold
+      - hold:
           type: approval
           requires:
             - build
