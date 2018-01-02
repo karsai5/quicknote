@@ -32,7 +32,7 @@ classifiers = [
 
 setup(
     name='quicknote',
-    version='1.0.1',
+    version='1.0.2',
     description='a quick note taking application',
     long_description=long_description,
     scripts=['qn'],
