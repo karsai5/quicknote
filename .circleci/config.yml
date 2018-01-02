@@ -45,7 +45,11 @@ jobs:
             source pyenv/bin/activate
             ./scripts/createpackage
 
-      run: echo "$CIRCLE_SHA1" > _build_hash
+      - run:
+          name: create build hash
+          command: |
+            echo "$CIRCLE_SHA1" > _build_hash
+
       - save_cache:
           paths:
             - ./dist
