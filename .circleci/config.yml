@@ -39,17 +39,6 @@ jobs:
             - ./pyenv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
 
-      # run tests!
-      # - run:
-      #     name: run tests
-      #     command: |
-      #       . venv/bin/activate
-      #       python manage.py test
-
-      # - store_artifacts:
-      #     path: test-reports
-      #     destination: test-reports
-
       - deploy:
           name: Deploy to server
           command: |
@@ -57,3 +46,8 @@ jobs:
             ./scripts/createpackage
             ./scripts/uploadpackage
             exit
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
