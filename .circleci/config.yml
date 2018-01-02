@@ -53,6 +53,7 @@ jobs:
       - deploy:
           name: Deploy to server
           command: |
+            source pyenv/bin/activate
             ./scripts/createpackage
             ./scripts/uploadpackage
             exit

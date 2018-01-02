@@ -1,6 +1,6 @@
 #! /bin/bash
 echo "==== Uploading contents of dist using twine."
-python -m twine upload dist/*
+twine upload dist/*
 if [ $? -eq 0 ]; then
   echo "==== Done!"
 else
