@@ -48,7 +48,7 @@ jobs:
       - save_cache:
           paths:
             - ./dist
-          key: v1-dist-{{ .Enviroment.CIRCLE_SHA1 }}
+          key: v1-dist-{{ $CIRCLE_SHA1 }}
 
   deploy:
     docker:
