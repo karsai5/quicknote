@@ -10,7 +10,9 @@ if [ $? -eq 0 ]; then
     echo "==== Done!"
   else
     echo "==== Something went wrong!"
+    exit 1
   fi
 else
   echo "==== Something went wrong!"
+  exit 1
 fi

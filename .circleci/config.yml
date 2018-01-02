@@ -54,6 +54,6 @@ jobs:
           name: Deploy to server
           command: |
             cd scripts
-            ./createpackage
-            ./uploadpackage
+            ./scripts/createpackage
+            ./scripts/uploadpackage
             exit
