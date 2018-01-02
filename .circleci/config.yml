@@ -49,3 +49,11 @@ jobs:
       # - store_artifacts:
       #     path: test-reports
       #     destination: test-reports
+
+      - deploy:
+          name: Deploy to server
+          command: |
+            cd scripts
+            ./createpackage
+            ./uploadpackage
+            exit
