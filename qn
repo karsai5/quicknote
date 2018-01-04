@@ -47,8 +47,9 @@ def updateDocumentSet():
     global documentSet
     documentSet =  []
     for note in sorted_ls(notationalDir):
-        if os.path.isfile(note):
-            filePath = notationalDir + '/' + note
+        filePath = notationalDir + '/' + note
+        if os.path.isfile(filePath) and note[0] != '.':
+            print('adding file');
             with open(filePath, 'r') as f:
                 words = []
                 for line in f:
