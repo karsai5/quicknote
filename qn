@@ -35,7 +35,7 @@ def setupScreen():
     curses.curs_set(0)
     screen.keypad(1)
 
-def sorted_ls(path):
+def getSortedListOfFilenames(path):
     mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
     return reversed(list(sorted(os.listdir(path), key=mtime)))
 
@@ -46,9 +46,9 @@ to reflect their contents. Note: for lots of files this could cause a hang.
 def updateDocumentSet():
     global documentSet
     documentSet =  []
-    for note in sorted_ls(notationalDir):
-        filePath = notationalDir + '/' + note
-        if isFile(filePath) and not isFileHidden(note):
+    for noteName in getSortedListOfFilenames(notationalDir):
+        filePath = notationalDir + '/' + noteName
+        if isFile(filePath) and not isFileHidden(noteName):
             with open(filePath, 'r') as f:
                 words = getWordsFromFile(f)
                 documentSet.append((filePath, set(words)))
