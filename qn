@@ -48,16 +48,28 @@ def updateDocumentSet():
     documentSet =  []
     for note in sorted_ls(notationalDir):
         filePath = notationalDir + '/' + note
-        if os.path.isfile(filePath) and note[0] != '.':
-            print('adding file');
+        if isFile(filePath) and not isFileHidden(note):
             with open(filePath, 'r') as f:
-                words = []
-                for line in f:
-                    line = re.sub(r'[^a-zA-Z0-9]',' ', line) # remove non-alphanumeric
-                    line = line.lower() # make all lowercase
-                    for word in line.split():
-                        words.append(word)
+                words = getWordsFromFile(f)
                 documentSet.append((filePath, set(words)))
+
+def isFile(filePath):
+    return os.path.isfile(filePath);
+
+def isFileHidden(fileName):
+    return fileName[0] == '.';
+
+def getWordsFromFile(f):
+    words = []
+    for line in f:
+        line = cleanLine(line)
+        words.extend(line.split())
+    return words
+
+def cleanLine(line):
+    line = re.sub(r'[^a-zA-Z0-9]',' ', line) # remove non-alphanumeric
+    line = line.lower()
+    return line
 
 """ Search for a term in files
 Using the internally generated document set, search for any files that contain
