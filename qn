@@ -20,6 +20,8 @@ results = []
 storedException = None
 EDITOR = os.environ.get('EDITOR','vim') #that easy!
 notationalDir = os.getcwd()
+screenW = None
+screenH = None
 
 # Set up curses to interpret non-ASCII characters
 locale.setlocale(locale.LC_ALL, '')
@@ -134,29 +136,35 @@ the currently selected file for editing.
 def drawPage():
     global selectedItem
     global results
+    global screenH
+    global screenW
 
-    h,w = screen.getmaxyx()
-    screen.clear()
-
-    # Print current search term
-    screen.addstr(fullWidthString("Search Term: %s" % searchTerm, updateText) + '\n', 
-            curses.A_REVERSE)
     results = findFiles(searchTerm)
+    screenH, screenW = screen.getmaxyx()
 
     if showPreview and selectedItem >= 0:
-        maxh = int(h-(h/1.8))
+        maxh = int(screenH - ( screenH/1.8 ))
     else:
-        maxh = h-1
+        maxh = screenH-1
 
     maxh = len(results) if len(results) < maxh else maxh
-    if selectedItem >= maxh: 
-        selectedItem = maxh-1
+    if selectedItem >= maxh:
+        selectedItem = maxh - 1
 
     elif selectedItem < -1:
         selectedItem = -1
 
-    # print each item in results, highlight selected item
-    for x in range(maxh):
+    screen.clear()
+    printSearchBar()
+    printFileList(maxh)
+    printSelectedFilePreview(screenH - maxh - 1)
+
+def printSearchBar():
+    screen.addstr(fullWidthString("Search Term: %s" % searchTerm, updateText) + '\n',
+            curses.A_REVERSE)
+
+def printFileList(numberOflinesToPrint):
+    for x in range(numberOflinesToPrint):
         # only show file title
         lineItem = fullWidthString(os.path.splitext(ntpath.basename(results[x]))[0],
             time.ctime(os.path.getmtime(results[x])))
@@ -165,10 +173,10 @@ def drawPage():
         else:
             safePrint(lineItem + '\n')
 
+def printSelectedFilePreview(numberOflinesToPrint):
     if showPreview and selectedItem >= 0:
-        safePrint(w * '-')
-        printNumLines = h - maxh -1
-        printFile(results[selectedItem], printNumLines)
+        safePrint(screenW * '-')
+        printFile(results[selectedItem], numberOflinesToPrint)
 
 """ Note editing function
 If a file is selected it will open it in your favourite editor, otherwise it'll
