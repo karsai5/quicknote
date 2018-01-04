@@ -142,22 +142,27 @@ def drawPage():
     results = findFiles(searchTerm)
     screenH, screenW = screen.getmaxyx()
 
-    if showPreview and selectedItem >= 0:
-        maxh = int(screenH - ( screenH/1.8 ))
-    else:
-        maxh = screenH-1
+    printedFileListHeight = getHeightForPrintedFileList()
 
-    maxh = len(results) if len(results) < maxh else maxh
-    if selectedItem >= maxh:
-        selectedItem = maxh - 1
-
-    elif selectedItem < -1:
-        selectedItem = -1
+    if selectedItem >= printedFileListHeight:
+        selectedItem = printedFileListHeight - 1
 
     screen.clear()
     printSearchBar()
-    printFileList(maxh)
-    printSelectedFilePreview(screenH - maxh - 1)
+    printFileList(printedFileListHeight)
+    printSelectedFilePreview(screenH - printedFileListHeight - 1)
+
+def getHeightForPrintedFileList():
+    height = -1
+    if showPreview and selectedItem >= 0:
+        height = int(screenH - (screenH/1.8))
+    else:
+        height = screenH - 1
+
+    if len(results) < height:
+        height = len(results)
+
+    return height
 
 def printSearchBar():
     screen.addstr(fullWidthString("Search Term: %s" % searchTerm, updateText) + '\n',
