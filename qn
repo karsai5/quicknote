@@ -4,6 +4,7 @@ from subprocess import call
 import curses
 import locale
 import logging
+import itertools
 import math
 import ntpath
 import os
@@ -116,26 +117,56 @@ def safePrint(text, *formattingArgs):
 Print the first @number of files from @filename, note that this
 doesn't take into account line wrapping """
 def printFile(filename, number = None):
-    return
     with open(filename, 'r') as f:
-        h,w = screen.getmaxyx()
-        counter = 0
-        lastline = ''
         for line in f:
-            # counter += math.ceil(len(line)/w)
-            counter += 1
-            safePrint(line)
-            screen.addnstr(line + '\n', w - 1)
-            lastline = line
-            if counter >= number:
-                break
-        # add newline if missing
-        # if '\n' not in lastline:
-        #     safePrint('\n')
-        # print blank lines
-        while counter < number-1:
-            safePrint('~\n')
-            counter += 1
+            catchErrorsPrintingFileLine(line)
+
+def catchErrorsPrintingFileLine(line):
+    try:
+        addstr_wordwrap(line)
+    except WindowFullException:
+        logging.warning('Window full exception')
+    except Exception as e:
+        logging.warning('Exception thrown: %s' % str(e))
+
+class WindowFullException(Exception):
+    pass
+
+def addstr_wordwrap(string, *formattingArgs):
+    """ (cursesWindow, str, int, int) -> None
+
+    Add a string to a curses window with given dimensions. If mode is given
+    (e.g. curses.A_BOLD), then format text accordingly. We do very
+    rudimentary wrapping on word boundaries.
+
+    Raise WindowFullException if we run out of room.
+    """
+    (height, width) = screen.getmaxyx()
+    height = height - 2
+    width = width - 1
+    (y, x) = screen.getyx() # Coords of cursor
+    # If the whole string fits on the current line, just add it all at once
+    if len(string) + x <= width:
+        screen.addstr(string, *formattingArgs)
+    # Otherwise, split on word boundaries and write each token individually
+    else:
+        for word in words_and_spaces(string):
+            if len(word) + x <= width:
+                screen.addstr(word, *formattingArgs)
+            else:
+                if y == height-1:
+                    # Can't go down another line
+                    raise WindowFullException()
+                screen.addstr(y+1, 0, word, *formattingArgs)
+            (y, x) = screen.getyx()
+
+def words_and_spaces(s):
+    """
+    >>> words_and_spaces('spam eggs ham')
+    ['spam', ' ', 'eggs', ' ', 'ham']
+    """
+    # Inspired by http://stackoverflow.com/a/8769863/262271
+    return list(itertools.chain.from_iterable(zip(s.split(), itertools.repeat(' '))))[:-1] # Drop the last space
 
 """ Main page drawing function
 Clears the screen and updates it with the current search term at the top
