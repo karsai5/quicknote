@@ -39,6 +39,7 @@ def setupScreen():
     curses.start_color()
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_WHITE)
+    curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.noecho()
     # curses.curs_set(0)
     screen.keypad(1)
@@ -105,11 +106,7 @@ def fullWidthString(texta, textb):
 """
 def safePrint(text, *formattingArgs):
     cursorY, cursorX = screen.getyx()
-    logging.info('screen width: %s' % screenW)
-    logging.info('text length: %s' % len(text))
     maxTextWidth = screenW - cursorX - 1
-    logging.info('maxTextWidth: %s' % maxTextWidth)
-    logging.info('screenW, cursorX: %s %s' % (screenW, cursorX))
     text = text[0:maxTextWidth]
     screen.addstr(text, *formattingArgs)
 
@@ -219,9 +216,28 @@ def printOnRightHandSide(string, *formattingArgs):
     safePrint(' ' * numberOfSpacesToPrint + string, *formattingArgs)
 
 def printFileList(numberOflinesToPrint):
+    # TODO: Needs refactoring!
     for x in range(numberOflinesToPrint):
         cursesFormatting = curses.A_REVERSE if x == selectedItem else curses.A_NORMAL
-        safePrint(os.path.splitext(ntpath.basename(results[x]))[0][0:screenW], cursesFormatting) # get filename
+        filename = os.path.splitext(ntpath.basename(results[x]))[0]
+        lowercaseFilename = filename.lower()
+        lowercaseSearchTerm = searchTerm.lower()
+
+        if searchTerm != '' and x != selectedItem:
+            cursor = 0
+            while cursor < len(filename):
+                logging.info('found!')
+                logging.info('cursor: %s' % cursor)
+                location = lowercaseFilename.find(lowercaseSearchTerm, cursor)
+                if location < 0:
+                    safePrint(filename[cursor:])
+                    cursor = len(filename)
+                else:
+                    safePrint(filename[cursor:location])
+                    safePrint(filename[location:location + len(searchTerm)], curses.color_pair(3))
+                    cursor = location + len(searchTerm)
+        else:
+            safePrint(filename, cursesFormatting)
         printOnRightHandSide(time.ctime(os.path.getmtime(results[x])) + '\n', cursesFormatting) # get date of creation
 
 def printSelectedFilePreview(numberOflinesToPrint):
