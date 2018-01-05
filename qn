@@ -118,16 +118,18 @@ Print the first @number of files from @filename, note that this
 doesn't take into account line wrapping """
 def printFile(filename, number = None):
     with open(filename, 'r') as f:
-        for line in f:
-            catchErrorsPrintingFileLine(line)
+        catchErrorsPrintingLinesFromFile(f)
 
-def catchErrorsPrintingFileLine(line):
-    try:
-        addstr_wordwrap(line)
-    except WindowFullException:
-        logging.warning('Window full exception')
-    except Exception as e:
-        logging.warning('Exception thrown: %s' % str(e))
+def catchErrorsPrintingLinesFromFile(f):
+    for line in f:
+        try:
+            addstr_wordwrap(line)
+        except WindowFullException:
+            logging.warning('Window full exception')
+            break
+        except Exception as e:
+            logging.warning('Exception thrown: %s' % str(e))
+            break
 
 class WindowFullException(Exception):
     pass
@@ -317,7 +319,8 @@ if __name__ == "__main__":
             elif event == 10:
                 editPage()
                 drawPage()
-            elif event < 257:
+            elif event < 257 and event > 0:
+                logging.info('chr event: %s' % event)
                 updateText = ''
                 searchTerm = searchTerm + str(chr(event))
                 drawPage()
