@@ -226,8 +226,6 @@ def printFileList(numberOflinesToPrint):
         if searchTerm != '' and x != selectedItem:
             cursor = 0
             while cursor < len(filename):
-                logging.info('found!')
-                logging.info('cursor: %s' % cursor)
                 location = lowercaseFilename.find(lowercaseSearchTerm, cursor)
                 if location < 0:
                     safePrint(filename[cursor:])
@@ -336,7 +334,6 @@ if __name__ == "__main__":
                 editPage()
                 drawPage()
             elif event < 257 and event > 0:
-                logging.info('chr event: %s' % event)
                 updateText = ''
                 searchTerm = searchTerm + str(chr(event))
                 drawPage()
