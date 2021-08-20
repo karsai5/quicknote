@@ -340,6 +340,6 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             storedException = sys.exc_info()
     curses.endwin()
-    print 'Thanks for using QuickNote!'
-    print '-- Linus'
+    sys.stdout.write('Thanks for using QuickNote!\n')
+    sys.stdout.write('-- Linus\n')
     sys.exit();
